@@ -3,8 +3,29 @@
     "name": "BreakTheCode",
     "slug": "BreakTheCode",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/BreakTheCodeIcon.png",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/BreakTheCodeIcon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.keeyani.breakthecode",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.ico"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "71580311-9fb6-4a18-8418-48ef41c3ec62"
+      }
+    }
   }
 }
