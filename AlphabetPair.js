@@ -7,14 +7,23 @@ const AlphabetPair = ({ text, numberValue }) => {
             <Text style={styles.alphabetText}>{text}</Text>
             <Text style={styles.alphabetNumber}>{numberValue}</Text>
         </View>
+        
     );
 };
 
 const styles = StyleSheet.create({
     alphabet: {
-        alignItems: 'center',
+       // alignItems: 'center',
+       // backgroundColor: 'lightgreen',
+       // borderRadius: 10,
+
+        flex: 1,
+       // height: 50, // Adjust height as per your requirement
         backgroundColor: 'lightgreen',
-        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        //marginHorizontal: 5,
+        borderRadius: 5,
     },
     alphabetText: {
         padding: 10,
@@ -24,6 +33,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    }
 });
 
 export default AlphabetPair;

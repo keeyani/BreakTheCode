@@ -3,7 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const NumberButton = ({ displayText, value, disabled, onPress }) => {
     return (
-        <TouchableOpacity style={[styles.numberButton, disabled ? styles.buttonDisabled : styles.buttonEnabled]} onPress={() => onPress(value)} disabled={disabled}>
+        <TouchableOpacity 
+        style={[styles.numberButton, disabled ? styles.buttonDisabled : styles.buttonEnabled]} 
+        onPress={() => onPress(value)} 
+        disabled={disabled}>
             <Text style={styles.buttonText}>{displayText}</Text>
         </TouchableOpacity>
     );
@@ -11,7 +14,7 @@ const NumberButton = ({ displayText, value, disabled, onPress }) => {
 
 const NumberPad = ({ onPressNumber, onClear, onConfirm, disabled }) => {
     return (
-        <View style={styles.numberPad}>
+        <View>
             <View style={styles.row}>
                 <NumberButton displayText="1" value="1" onPress={onPressNumber} disabled={disabled}/>
                 <NumberButton displayText="2" value="2" onPress={onPressNumber} disabled={disabled} />
@@ -38,12 +41,12 @@ const NumberPad = ({ onPressNumber, onClear, onConfirm, disabled }) => {
 
 
 const styles = StyleSheet.create({
-    numberPad: {
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
     row: {
-        flexDirection: 'row',
+       // flexDirection: 'row',
+       // marginBottom: 10,
+       flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         marginBottom: 10,
     },
     numberButton: {
@@ -51,11 +54,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginHorizontal: 5,
         borderRadius: 10,
-        width: 80, // Set a fixed width for all buttons
+        height: 50,
+        minWidth: '30%', 
         alignItems: 'center',
     },
     buttonText: {
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     buttonEnabled: {
         backgroundColor: 'lightblue',
