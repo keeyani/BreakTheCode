@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import NumberPad from './NumberPad';
 import AlphabetPair from './AlphabetPair';
 import { getSymbolByName } from './Utility/MathOperation';
-import InfoPanel from './InfoPanel';
+import InfoPanel, { CodesPanel } from './InfoPanel';
 
 
 const CodeBreaker = ({ alphabet1, alphabet2, operation, onNextLevel, disabled }) => {
@@ -73,7 +73,7 @@ const Header = ({ text }) => {
 const App = () => {
     const [score, setScore] = useState(0);
     const [level, setLevel] = useState(0); // State to track the current level
-    const [maxLevel, setMaxLevel] = useState(7)
+    const [maxLevel, setMaxLevel] = useState(8)
     const [levelOperation, setLevelOperation] = useState();
     const [codes, setCodes] = useState([
         { text: 'A', numberValue: '1' },
@@ -85,6 +85,7 @@ const App = () => {
         { text: 'G', numberValue: '7' },
         { text: 'H', numberValue: '8' },
         { text: 'I', numberValue: '9' },
+        { text: 'J', numberValue: '10' },
     ]);
     const [levelCodes, setLevelCodes] = useState([
         codes[level],
@@ -118,14 +119,8 @@ const App = () => {
     return (
         <View style={styles.container}>
             <InfoPanel box1Title={'Level'} box1Heading={level} box2Title={'Score'} box2Heading={score} />
+            <CodesPanel codes={ codes} />
             <InfoPanel box1Title={'Break The Code'} box1Heading={`${levelCodes[0].text} + ${levelCodes[1].text}`}/>
-
-            <View style={styles.row}>
-                <Header text="Letters" />
-                {codes.map((c, index) => (
-                    <AlphabetPair key={index} text={c.text} numberValue={c.numberValue} />
-                ))}
-            </View>
             <CodeBreaker alphabet1={levelCodes[0]} alphabet2={levelCodes[1]} operation={() => getLevelOperation()} onNextLevel={onNextLevel} disabled={level === maxLevel} />
         </View>
     );
@@ -134,7 +129,8 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 10, // Adjust as per your requirement
+        paddingTop: 20, // Adjust as per your requirement
+        paddingBottom: 20,
         paddingHorizontal: 10,
         alignItems: 'center',
         justifyContent: 'flex-end',
