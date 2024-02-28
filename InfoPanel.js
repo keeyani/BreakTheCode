@@ -26,6 +26,29 @@ const InfoPanel = ({ box1Title, box1Heading, box2Title, box2Heading }) => {
     );
 };
 
+const AnswerBox = ({ value}) => {
+    return (<View style={styles.textContainer}>
+        <Text style={styles.text}>Answer</Text>
+        <Text style={[styles.text, styles.largerText]}>{!value ? '?' : value}</Text>
+    </View>);
+}
+
+export const QPanel = ({ qTitle, qPuzzle, answer}) => {
+    return (
+        <View style={styles.container}>
+            <View style={styles.boxPuzzle}>
+                <View style={styles.row}>
+                    <InfoBox title={qTitle} heading={qPuzzle} />
+                </View>
+            </View>
+            <View style={styles.box}>
+                <View style={styles.row}>
+                    <AnswerBox value={answer} />
+                </View>
+            </View>
+        </View>
+    );
+};
 
 const CodeBox = ({ title, heading }) => (
     <View style={styles.smallBox}>
@@ -70,6 +93,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     box: {
+        flex: 1,
+    },
+    boxPuzzle: {
+        //flex: 2,
         flex: 1,
     },
     row: {

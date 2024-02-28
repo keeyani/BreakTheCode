@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+//import { StatusBar } from 'expo-status-bar';
+import { View, StyleSheet } from 'react-native';
 import NumberPad from './NumberPad';
-import AlphabetPair from './AlphabetPair';
 import { getSymbolByName } from './Utility/MathOperation';
-import InfoPanel, { CodesPanel } from './InfoPanel';
+import InfoPanel, { CodesPanel, QPanel } from './InfoPanel';
 
-
-const CodeBreaker = ({ alphabet1, alphabet2, operation, onNextLevel, disabled }) => {
+const App = () => {
     const [answer, setAnswer] = useState('');
-    const [message, setMessage] = useState('');
+    const [score, setScore] = useState(0);
+    const [level, setLevel] = useState(); // State to track the current level
+    const [maxLevel, setMaxLevel] = useState(8)
+    const [levelOperation, setLevelOperation] = useState();
+    const [puzzle, setPuzzle] = useState();
+    const [opA, setOpA] = useState();
+    const [opB, setOpB] = useState();
+    const [codes, setCodes] = useState([
+        { text: 'A', numberValue: '1' },
+        { text: 'B', numberValue: '2' },
+        { text: 'C', numberValue: '3' },
+        { text: 'D', numberValue: '4' },
+        { text: 'E', numberValue: '5' },
+        { text: 'F', numberValue: '6' },
+        { text: 'G', numberValue: '7' },
+        { text: 'H', numberValue: '8' },
+        { text: 'I', numberValue: '9' },
+        { text: 'J', numberValue: '10' },
+    ]);
+
+    const [levelCodes, setLevelCodes] = useState([]);
 
     // Function to handle pressing a number
     const onPressNumber = (number) => {
@@ -23,105 +42,100 @@ const CodeBreaker = ({ alphabet1, alphabet2, operation, onNextLevel, disabled })
     // Function to handle checking the answer
     const checkAnswer = () => {
         let result = 0;
-        if (operation == '-') {
-            result = parseInt(alphabet1.numberValue) - parseInt(alphabet2.numberValue);
+        if (levelOperation == '-') {
+            result = parseInt(opA) - parseInt(opB);
         } else {
-            result = parseInt(alphabet1.numberValue) + parseInt(alphabet2.numberValue);
+            result = parseInt(opA) + parseInt(opB);
         }
 
         if (answer === result.toString()) {
-            setAnswer('');
-            onNextLevel(); // Move to the next level
+            onCorrectAnswer(); // Move to the next level
         } else {
-            setMessage('Try again!');
+            onWrongAnswer();
         }
     };
 
-    return (
-        <View style={styles.breakTheCode}>
-            <View style={[styles.inputContainer, styles.row]}>
-                <Text style={styles.input}>{answer}</Text>
-            </View>
-            <NumberPad onPressNumber={onPressNumber} onClear={onClear} onConfirm={checkAnswer} disabled={disabled} />
-        </View>
-    );
-};
+    const configurePuzzle = (code1, code2, operation) => {
+        let ops = [code1, code2];
+        const max = ops.reduce(function (prev, current) {
+            return (prev && prev.numberValue > current.numberValue) ? prev : current
+        }); //returns the object with max value
 
-const LevelButton = ({ level, displayValue, handleLevelSelect, active }) => {
-    return (
-        <TouchableOpacity
-            onPress={() => handleLevelSelect(level)}
-            style={[styles.levelButton, active ? styles.selectedLevelButton : styles.disabledLevelButton]}
-            disabled={!active}
-        >
-            <Text style={styles.buttonText}>{displayValue}</Text>
-        </TouchableOpacity>
-    );
-};
+        ops.sort((a, b) => (a.numberValue > b.numberValue) ? -1 : ((b.numberValue > a.numberValue) ? 1 : 0)); // sort desc
 
-const Header = ({ text }) => {
-    return (
-        <TouchableOpacity
-            style={styles.levelText}
-            disabled
-        >
-            <Text style={styles.buttonText}>{text}</Text>
-        </TouchableOpacity>
-    );
-};
+        setOpA(ops[0].numberValue);
+        setOpB(ops[1].numberValue);
+        if (operation === '-') {
+            setPuzzle(`${ops[0].text} ${operation} ${ops[1].text}`);    // first code is bigger
+        } else {
+            setPuzzle(`${ops[1].text} ${operation} ${ops[0].text}`);
+        }
+        
+    }
 
-const App = () => {
-    const [score, setScore] = useState(0);
-    const [level, setLevel] = useState(0); // State to track the current level
-    const [maxLevel, setMaxLevel] = useState(8)
-    const [levelOperation, setLevelOperation] = useState();
-    const [codes, setCodes] = useState([
-        { text: 'A', numberValue: '1' },
-        { text: 'B', numberValue: '2' },
-        { text: 'C', numberValue: '3' },
-        { text: 'D', numberValue: '4' },
-        { text: 'E', numberValue: '5' },
-        { text: 'F', numberValue: '6' },
-        { text: 'G', numberValue: '7' },
-        { text: 'H', numberValue: '8' },
-        { text: 'I', numberValue: '9' },
-        { text: 'J', numberValue: '10' },
-    ]);
-    const [levelCodes, setLevelCodes] = useState([
-        codes[level],
-        codes[level + 1],
-    ]);
+    const getLevelOperation = (value) => {
+        if (value <= 2)
+            return getSymbolByName('Add')
 
-    const getLevelOperation = () => {
-        if (level < 2)
-            return getLevelOperation('Add')
+        return getSymbolByName('Minus');
+    }
 
-        return getLevelOperation('Minus');
+    function getRandomLevel(min, max) { // min and max included 
+        return Math.floor(Math.random() * (max - min + 1) + min)
     }
 
     // Function to handle level selection
     const handleLevelSelect = (selectedLevel) => {
         setLevel(selectedLevel);
-        setLevelCodes([
-            codes[selectedLevel],
-            codes[selectedLevel + 1]
-        ]);
+        let operation = getLevelOperation(selectedLevel);
+        let randLevel = getRandomLevel(selectedLevel + 1, maxLevel);
+        let operandA = codes[selectedLevel];
+        let operandB = codes[randLevel];
+        //setLevelCodes([operandA, operandB]); // future use for dynamic
+        setLevelOperation(operation);
+        configurePuzzle(operandA, operandB, operation);
     };
 
     // Function to handle moving to the next level
-    const onNextLevel = () => {
+    const onCorrectAnswer = () => {
         if (level < maxLevel) {
             handleLevelSelect(level + 1);
             setScore(score + 5);
+            setAnswer('');
         }
     };
+
+    const onWrongAnswer = () => {
+        onClear();
+    }
+
+    const reset = () => {
+        handleLevelSelect(0);
+        setScore(0);
+        setAnswer();
+    }
+
+    useEffect(() => {
+        handleLevelSelect(0);
+    }, [])
 
     return (
         <View style={styles.container}>
             <InfoPanel box1Title={'Level'} box1Heading={level} box2Title={'Score'} box2Heading={score} />
-            <CodesPanel codes={ codes} />
-            <InfoPanel box1Title={'Break The Code'} box1Heading={`${levelCodes[0].text} + ${levelCodes[1].text}`}/>
-            <CodeBreaker alphabet1={levelCodes[0]} alphabet2={levelCodes[1]} operation={() => getLevelOperation()} onNextLevel={onNextLevel} disabled={level === maxLevel} />
+            <CodesPanel codes={codes} />
+            <QPanel
+                qTitle={'Break The Code'}
+                qPuzzle={puzzle}
+                answer={answer} />
+
+            <NumberPad
+                onPressNumber={onPressNumber}
+                onClear={onClear}
+                onConfirm={() => checkAnswer()}
+                onReset={reset}
+                disabled={level === maxLevel}
+            />
+
         </View>
     );
 };
@@ -221,9 +235,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    breakTheCode: {
-        alignItems: 'center',
     },
     breakTheCodeHeading: {
         fontSize: 20,
