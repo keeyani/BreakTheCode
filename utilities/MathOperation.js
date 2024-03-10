@@ -9,4 +9,3 @@ export const getSymbolByName = (name) => {
 
     return symbols[name] || null;
 };
-
