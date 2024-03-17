@@ -2,7 +2,7 @@
   "expo": {
     "name": "BreakTheCode",
     "slug": "BreakTheCode",
-    "version": "1.0.1",
+    "version": "1.0.",
     "orientation": "portrait",
     "icon": "./assets/BreakTheCodeIcon.png",
     "assetBundlePatterns": [
@@ -12,7 +12,7 @@
       "fallbackToCacheTimeout": 0
     },
     "android": {
-    "versionCode": 2,
+    "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/BreakTheCodeIcon.png",
         "backgroundColor": "#FFFFFF"
